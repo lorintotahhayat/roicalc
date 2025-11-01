@@ -26,8 +26,8 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 20px 40px rgba(107, 70, 193, 0.3);
-  --font-primary: 'Poppins', sans-serif;
-  --font-secondary: 'Inter', sans-serif;
+  --font-primary: var(--font-poppins), 'Poppins', sans-serif;
+  --font-secondary: var(--font-inter), 'Inter', sans-serif;
 
   font-family: var(--font-secondary);
   background-color: var(--charcoal);
