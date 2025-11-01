@@ -1,0 +1,38 @@
+/* Modern Event Page Styles */
+.event-page {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #fafafa;
+}
+
+/* Mobile bottom nav safe area */
+@media (max-width: 768px) {
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Badge colors */
+.badge-module { background-color: #6366f1; }
+.badge-consulting { background-color: #06b6d4; }
+.badge-semiconductor { background-color: #ef4444; }
+.badge-rtos { background-color: #3b82f6; }
+.badge-security { background-color: #f59e0b; }
+.badge-design { background-color: #10b981; }
+.badge-industrial { background-color: #1e40af; }
+.badge-connectivity { background-color: #6366f1; }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
