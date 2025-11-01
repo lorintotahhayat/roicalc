@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Image from "next/image";
 import "./morhayat.css";
 
 const contactInfo = {
@@ -177,10 +178,13 @@ END:VCARD`;
           <div className="business-card">
             <div className="profile-section">
               <div className="profile-circle">
-                <img 
+                <Image 
                   src="/images/morhayat.jpeg" 
                   alt={contactInfo.name}
+                  width={80}
+                  height={80}
                   className="profile-photo"
+                  priority
                 />
               </div>
               <h1 className="name">{contactInfo.name}</h1>
@@ -249,6 +253,9 @@ END:VCARD`;
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(contactInfo.linkedin)}&color=4C1D95&bgcolor=FFFFFF`}
                   alt="QR Code linking to LinkedIn profile"
                   className="qr-code-image"
+                  width={120}
+                  height={120}
+                  loading="lazy"
                 />
               </div>
               <p className="qr-subtitle">Scan to view my LinkedIn profile</p>

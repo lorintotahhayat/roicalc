@@ -154,9 +154,33 @@
   padding: 0;
 }
 
-.morhayat-page .profile-photo {
+.morhayat-page .profile-circle > span {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.morhayat-page .profile-placeholder {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  background: var(--gradient-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.morhayat-page .initials {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  font-family: var(--font-primary);
+}
+
+.morhayat-page .profile-photo {
+  width: 100% !important;
+  height: 100% !important;
   border-radius: 50%;
   object-fit: cover;
   object-position: center;
@@ -280,12 +304,17 @@
   margin-bottom: 6px;
 }
 
+.morhayat-page .qr-code-container > span {
+  display: block !important;
+}
+
 .morhayat-page #qrcode,
 .morhayat-page .qr-code-image {
   display: block;
   margin: 0 auto;
   width: 120px;
   height: 120px;
+  max-width: 100%;
 }
 
 .morhayat-page .qr-subtitle {
