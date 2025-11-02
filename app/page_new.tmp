@@ -1,10 +1,3 @@
-"use client";
-
-import React, { useState, useMemo } from "react";
-import "./event/event.css";
-
-// ... (companies array stays the same) ...
-const companies = [
   { name: "AAEON Electronics, Inc.", booth: "7066", useCase: "Industrial computing platforms - may use third-party binaries requiring validation", type: "Module/COM/Board Vendor" },
   { name: "ADL Embedded Solutions", booth: "8044", useCase: "Embedded computing solutions - potential for binary optimization in customer projects", type: "Consulting/Services/Embedded Houses" },
   { name: "Advanced Security Technologies", booth: "4009D", useCase: "Security focus aligns with LOCI's binary security validation capabilities", type: "Embedded/Industrial Vendor" },

@@ -15,8 +15,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "ROI Calculator - Development Savings",
-  description: "Calculate your development savings with LOCI",
+  title: "Embedded World 2025 - Aurora Labs Event Guide",
+  description: "Complete Event Guide for Embedded World 2025 by Aurora Labs",
 };
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import "./event/event.css";
+import "./event.css";
 
 // ... (companies array stays the same) ...
 const companies = [
