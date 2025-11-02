@@ -131,7 +131,6 @@ END:VCARD`;
       await navigator.clipboard.writeText(value);
       showNotification(`Copied: ${value}`);
     } catch (error) {
-      console.error("Failed to copy:", error);
     }
   };
 

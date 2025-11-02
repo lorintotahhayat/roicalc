@@ -14,7 +14,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Error reading PDF:', error);
     return new NextResponse('PDF not found', { status: 404 });
   }
 }
