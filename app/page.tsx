@@ -181,9 +181,17 @@ export default function EventPage() {
   const [showAddTBD, setShowAddTBD] = useState(false);
   const [newTBDName, setNewTBDName] = useState("");
   const [newTBDContact, setNewTBDContact] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginPassword, setLoginPassword] = useState("");
 
   // Load meetings from DB
   useEffect(() => {
+    // Check if user is authenticated from localStorage
+    const authStatus = localStorage.getItem('event_admin_authenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    }
     loadMeetings();
     loadTBDCompanies();
   }, []);
@@ -308,7 +316,7 @@ export default function EventPage() {
 
   const showNotification = (message: string, type: 'success' | 'error') => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 4000);
+    setTimeout(() => setNotification(null), 3000);
   };
 
   const handleParseMeeting = () => {
@@ -666,6 +674,25 @@ export default function EventPage() {
     setDeleteTBDConfirm(null);
   };
 
+  const handleLogin = () => {
+    if (loginPassword === '123456') {
+      setIsAuthenticated(true);
+      localStorage.setItem('event_admin_authenticated', 'true');
+      setShowLoginModal(false);
+      setLoginPassword('');
+      showNotification('Logged in successfully!', 'success');
+    } else {
+      showNotification('Incorrect password', 'error');
+      setLoginPassword('');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('event_admin_authenticated');
+    showNotification('Logged out successfully', 'success');
+  };
+
   const toggleDay = (date: string) => {
     setExpandedDays(prev => ({
       ...prev,
@@ -736,7 +763,7 @@ export default function EventPage() {
                 >
                   Delete
                 </button>
-              </div>
+        </div>
             </div>
           </div>
         </div>
@@ -751,7 +778,7 @@ export default function EventPage() {
                 <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
                   <i className="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                 </div>
-                <div>
+              <div>
                   <h3 className="text-lg font-semibold text-gray-900">Delete Note</h3>
                   <p className="text-sm text-gray-500">This action cannot be undone</p>
                 </div>
@@ -844,7 +871,7 @@ export default function EventPage() {
               <h1 className="text-xl md:text-2xl font-semibold text-gray-900">Embedded World 2025</h1>
               <p className="text-xs md:text-sm text-gray-500 mt-1">Aurora Labs • Booth #9070</p>
             </div>
-            <div className="hidden md:flex gap-1">
+            <div className="hidden md:flex items-center gap-1">
               <button
                 onClick={() => setActivePage("schedule")}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
@@ -868,6 +895,17 @@ export default function EventPage() {
                 }`}
               >
                 Map
+              </button>
+              <button
+                onClick={() => isAuthenticated ? handleLogout() : setShowLoginModal(true)}
+                className={`ml-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+                  isAuthenticated 
+                    ? "bg-green-100 text-green-700 hover:bg-green-200" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <i className={`fas ${isAuthenticated ? 'fa-sign-out-alt' : 'fa-sign-in-alt'}`}></i>
+                <span>{isAuthenticated ? 'Logout' : 'Login'}</span>
               </button>
             </div>
           </div>
@@ -908,6 +946,55 @@ export default function EventPage() {
         </div>
       </nav>
 
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={() => setShowLoginModal(false)}>
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                  <i className="fas fa-lock text-gray-600 text-xl"></i>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Admin Login</h3>
+                  <p className="text-sm text-gray-500">Enter password to access admin features</p>
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                  placeholder="Enter password"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowLoginModal(false);
+                    setLoginPassword('');
+                  }}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleLogin}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {activePage === "schedule" && (
@@ -923,15 +1010,16 @@ export default function EventPage() {
         </div>
 
             {/* Add Meeting Button */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              {!showAddMeeting ? (
-                <button
-                  onClick={() => setShowAddMeeting(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                >
-                  <i className="fas fa-plus"></i>
-                  <span>Add Meeting</span>
-                </button>
+            {isAuthenticated && (
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                {!showAddMeeting ? (
+                  <button
+                    onClick={() => setShowAddMeeting(true)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    <i className="fas fa-plus"></i>
+                    <span>Add Meeting</span>
+                  </button>
               ) : !parsedMeetingForm ? (
                 <div className="space-y-3">
                   <textarea
@@ -954,14 +1042,14 @@ export default function EventPage() {
                     >
                       Cancel
                     </button>
-                  </div>
+              </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="text-sm font-medium text-gray-700 mb-3">Review and Edit Meeting Details:</div>
-                  
+
                   <div className="space-y-3">
-                    <div>
+              <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Company *</label>
                       <input
                         type="text"
@@ -969,11 +1057,11 @@ export default function EventPage() {
                         onChange={(e) => setParsedMeetingForm(prev => prev ? {...prev, company: e.target.value} : null)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         required
-                      />
-                    </div>
-                    
+                />
+              </div>
+
                     <div className="grid grid-cols-2 gap-3">
-                      <div>
+              <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">Date</label>
                         <input
                           type="text"
@@ -993,9 +1081,9 @@ export default function EventPage() {
                           placeholder="e.g., Tuesday"
                         />
                       </div>
-                    </div>
-                    
-                    <div>
+              </div>
+
+              <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Time</label>
                       <input
                         type="text"
@@ -1003,8 +1091,8 @@ export default function EventPage() {
                         onChange={(e) => setParsedMeetingForm(prev => prev ? {...prev, time: e.target.value} : null)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         placeholder="e.g., 14:00-14:30"
-                      />
-                    </div>
+                />
+              </div>
                     
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
@@ -1015,7 +1103,7 @@ export default function EventPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         placeholder="e.g., Aurora Booth 9070"
                       />
-                    </div>
+                  </div>
                     
                     <div className="grid grid-cols-2 gap-3">
                       <div>
@@ -1026,7 +1114,7 @@ export default function EventPage() {
                           onChange={(e) => setParsedMeetingForm(prev => prev ? {...prev, contact_name: e.target.value} : null)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         />
-                      </div>
+                  </div>
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">Contact Email</label>
                         <input
@@ -1035,8 +1123,8 @@ export default function EventPage() {
                           onChange={(e) => setParsedMeetingForm(prev => prev ? {...prev, contact_email: e.target.value} : null)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         />
-                      </div>
-                    </div>
+                </div>
+                </div>
                     
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Attendees</label>
@@ -1047,7 +1135,7 @@ export default function EventPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
                         placeholder="e.g., Mor, Zohar"
                       />
-                    </div>
+                </div>
                     
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
@@ -1057,7 +1145,7 @@ export default function EventPage() {
                         rows={3}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
                       />
-                    </div>
+              </div>
                     
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Notes</label>
@@ -1068,8 +1156,8 @@ export default function EventPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
                         placeholder="e.g., Unstable meeting - needs confirmation"
                       />
-                    </div>
-                    
+        </div>
+
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
                       <select
@@ -1106,7 +1194,8 @@ export default function EventPage() {
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             {/* Meetings */}
             {loading ? (
@@ -1194,41 +1283,41 @@ export default function EventPage() {
                                       <h3 className="text-base md:text-lg font-semibold text-gray-900">{meeting.company}</h3>
                                     )}
                                   </div>
-                                  {!isEditing && (
-                                    <div className="ml-2 flex gap-2">
-                                      <button
-                                        onClick={() => {
-                                          setEditingMeetingId(meeting.id);
-                                          setEditFormData(prev => ({
-                                            ...prev,
-                                            [meeting.id]: {
-                                              company: meeting.company,
-                                              attendees: meeting.attendees || '',
-                                              location: meeting.location || '',
-                                              contact_name: meeting.contact_name || '',
-                                              contact_email: meeting.contact_email || '',
-                                              contact_linkedin: meeting.contact_linkedin || '',
-                                              description: meeting.description || '',
-                                              notes: meeting.notes || '',
-                                            }
-                                          }));
-                                        }}
-                                        className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors flex items-center gap-1.5"
-                                        title="Edit meeting"
-                                      >
-                                        <i className="fas fa-edit text-xs"></i>
-                                        <span>Edit</span>
-                                      </button>
-                                      <button
-                                        onClick={() => handleDeleteClick(meeting.id, meeting.company)}
-                                        className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors flex items-center gap-1.5"
-                                        title="Delete meeting"
-                                      >
-                                        <i className="fas fa-trash text-xs"></i>
-                                        <span>Delete</span>
-                                      </button>
-                                    </div>
-                                  )}
+                {!isEditing && isAuthenticated && (
+                  <div className="ml-2 flex gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingMeetingId(meeting.id);
+                        setEditFormData(prev => ({
+                          ...prev,
+                          [meeting.id]: {
+                            company: meeting.company,
+                            attendees: meeting.attendees || '',
+                            location: meeting.location || '',
+                            contact_name: meeting.contact_name || '',
+                            contact_email: meeting.contact_email || '',
+                            contact_linkedin: meeting.contact_linkedin || '',
+                            description: meeting.description || '',
+                            notes: meeting.notes || '',
+                          }
+                        }));
+                      }}
+                      className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors flex items-center gap-1.5"
+                      title="Edit meeting"
+                    >
+                      <i className="fas fa-edit text-xs"></i>
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(meeting.id, meeting.company)}
+                      className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors flex items-center gap-1.5"
+                      title="Delete meeting"
+                    >
+                      <i className="fas fa-trash text-xs"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                )}
                                 </div>
                                 {isEditing ? (
                                   <div className="space-y-3">
@@ -1396,86 +1485,90 @@ export default function EventPage() {
                                                 <span>{new Date(note.created_at).toLocaleString()}</span>
                                               </div>
                                             </div>
-                                            <button
-                                              onClick={() => handleDeleteNoteClick(meeting.id, note.id, note.created_by)}
-                                              className="px-2 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded transition-colors flex items-center gap-1 flex-shrink-0"
-                                              title="Delete note"
-                                            >
-                                              <i className="fas fa-trash text-xs"></i>
-                                            </button>
+                                            {isAuthenticated && (
+                                              <button
+                                                onClick={() => handleDeleteNoteClick(meeting.id, note.id, note.created_by)}
+                                                className="px-2 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded transition-colors flex items-center gap-1 flex-shrink-0"
+                                                title="Delete note"
+                                              >
+                                                <i className="fas fa-trash text-xs"></i>
+                                              </button>
+                                            )}
                                           </div>
                                         ))}
                                       </div>
                                     )}
 
                                     {/* Add Note Form - Show if no notes OR if user clicked "Add Note" */}
-                                    {(!meetingNotes[meeting.id]?.length || showAddNoteForm[meeting.id]) ? (
-                                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                                        <div className="mb-2">
-                                          <input
-                                            type="text"
-                                            placeholder="Your name"
-                                            value={newNoteAuthor[meeting.id] || ''}
-                                            onChange={(e) => setNewNoteAuthor(prev => ({
-                                              ...prev,
-                                              [meeting.id]: e.target.value
-                                            }))}
-                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                                          />
-                                        </div>
-                                        <div className="mb-2">
-                                          <textarea
-                                            placeholder="Add a note..."
-                                            value={newNoteText[meeting.id] || ''}
-                                            onChange={(e) => setNewNoteText(prev => ({
-                                              ...prev,
-                                              [meeting.id]: e.target.value
-                                            }))}
-                                            rows={3}
-                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
-                                          />
-                                        </div>
-                                        <div className="flex gap-2">
-                                          <button
-                                            onClick={() => handleAddNote(meeting.id)}
-                                            className="flex-1 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors"
-                                          >
-                                            Add Note
-                                          </button>
-                                          {meetingNotes[meeting.id]?.length > 0 && (
+                                    {isAuthenticated && (
+                                      (!meetingNotes[meeting.id]?.length || showAddNoteForm[meeting.id]) ? (
+                                        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                                          <div className="mb-2">
+                                            <input
+                                              type="text"
+                                              placeholder="Your name"
+                                              value={newNoteAuthor[meeting.id] || ''}
+                                              onChange={(e) => setNewNoteAuthor(prev => ({
+                                                ...prev,
+                                                [meeting.id]: e.target.value
+                                              }))}
+                                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                            />
+                                          </div>
+                                          <div className="mb-2">
+                                            <textarea
+                                              placeholder="Add a note..."
+                                              value={newNoteText[meeting.id] || ''}
+                                              onChange={(e) => setNewNoteText(prev => ({
+                                                ...prev,
+                                                [meeting.id]: e.target.value
+                                              }))}
+                                              rows={3}
+                                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                                            />
+                                          </div>
+                                          <div className="flex gap-2">
                                             <button
-                                              onClick={() => {
-                                                setShowAddNoteForm(prev => {
-                                                  const updated = { ...prev };
-                                                  delete updated[meeting.id];
-                                                  return updated;
-                                                });
-                                                setNewNoteText(prev => {
-                                                  const updated = { ...prev };
-                                                  delete updated[meeting.id];
-                                                  return updated;
-                                                });
-                                                setNewNoteAuthor(prev => {
-                                                  const updated = { ...prev };
-                                                  delete updated[meeting.id];
-                                                  return updated;
-                                                });
-                                              }}
-                                              className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                              onClick={() => handleAddNote(meeting.id)}
+                                              className="flex-1 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors"
                                             >
-                                              Cancel
+                                              Add Note
                                             </button>
-                                          )}
+                                            {meetingNotes[meeting.id]?.length > 0 && (
+                                              <button
+                                                onClick={() => {
+                                                  setShowAddNoteForm(prev => {
+                                                    const updated = { ...prev };
+                                                    delete updated[meeting.id];
+                                                    return updated;
+                                                  });
+                                                  setNewNoteText(prev => {
+                                                    const updated = { ...prev };
+                                                    delete updated[meeting.id];
+                                                    return updated;
+                                                  });
+                                                  setNewNoteAuthor(prev => {
+                                                    const updated = { ...prev };
+                                                    delete updated[meeting.id];
+                                                    return updated;
+                                                  });
+                                                }}
+                                                className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                              >
+                                                Cancel
+                                              </button>
+                                            )}
+                                          </div>
                                         </div>
-                                      </div>
-                                    ) : (
-                                      <button
-                                        onClick={() => setShowAddNoteForm(prev => ({ ...prev, [meeting.id]: true }))}
-                                        className="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center justify-center gap-2"
-                                      >
-                                        <i className="fas fa-plus text-xs"></i>
-                                        Add Note
-                                      </button>
+                                      ) : (
+                                        <button
+                                          onClick={() => setShowAddNoteForm(prev => ({ ...prev, [meeting.id]: true }))}
+                                          className="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                        >
+                                          <i className="fas fa-plus text-xs"></i>
+                                          Add Note
+                                        </button>
+                                      )
                                     )}
                                   </div>
                                 </div>
@@ -1505,60 +1598,62 @@ export default function EventPage() {
               }`}>
                 <div className="px-4 pb-4">
                   {/* Add TBD Form */}
-                  {showAddTBD ? (
-                    <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3">Add TBD Company</h3>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Company Name *</label>
-                          <input
-                            type="text"
-                            value={newTBDName}
-                            onChange={(e) => setNewTBDName(e.target.value)}
-                            placeholder="Enter company name"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Contact (optional)</label>
-                          <input
-                            type="text"
-                            value={newTBDContact}
-                            onChange={(e) => setNewTBDContact(e.target.value)}
-                            placeholder="Enter contact info"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                          />
-                        </div>
-                        <div className="flex gap-2 pt-2">
-                          <button
-                            onClick={handleAddTBD}
-                            className="flex-1 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => {
-                              setShowAddTBD(false);
-                              setNewTBDName('');
-                              setNewTBDContact('');
-                            }}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors"
-                          >
-                            Cancel
-                          </button>
+                  {isAuthenticated && (
+                    showAddTBD ? (
+                      <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Add TBD Company</h3>
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Company Name *</label>
+                            <input
+                              type="text"
+                              value={newTBDName}
+                              onChange={(e) => setNewTBDName(e.target.value)}
+                              placeholder="Enter company name"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Contact (optional)</label>
+                            <input
+                              type="text"
+                              value={newTBDContact}
+                              onChange={(e) => setNewTBDContact(e.target.value)}
+                              placeholder="Enter contact info"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                            />
+                          </div>
+                          <div className="flex gap-2 pt-2">
+                            <button
+                              onClick={handleAddTBD}
+                              className="flex-1 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => {
+                                setShowAddTBD(false);
+                                setNewTBDName('');
+                                setNewTBDContact('');
+                              }}
+                              className="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="mb-4">
-                      <button
-                        onClick={() => setShowAddTBD(true)}
-                        className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center justify-center gap-2"
-                      >
-                        <i className="fas fa-plus text-xs"></i>
-                        Add TBD Company
-                      </button>
-                    </div>
+                    ) : (
+                      <div className="mb-4">
+                        <button
+                          onClick={() => setShowAddTBD(true)}
+                          className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center justify-center gap-2"
+                        >
+                          <i className="fas fa-plus text-xs"></i>
+                          Add TBD Company
+                        </button>
+                      </div>
+                    )
                   )}
 
                   {/* TBD Companies List */}
@@ -1576,13 +1671,15 @@ export default function EventPage() {
                               <div className="text-xs text-gray-500 mt-1">{company.contact}</div>
                             )}
                           </div>
-                          <button
-                            onClick={() => handleDeleteTDBClick(company.id, company.name)}
-                            className="px-2 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded transition-colors flex items-center gap-1 flex-shrink-0"
-                            title="Delete TBD company"
-                          >
-                            <i className="fas fa-trash text-xs"></i>
-                          </button>
+                          {isAuthenticated && (
+                            <button
+                              onClick={() => handleDeleteTDBClick(company.id, company.name)}
+                              className="px-2 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded transition-colors flex items-center gap-1 flex-shrink-0"
+                              title="Delete TBD company"
+                            >
+                              <i className="fas fa-trash text-xs"></i>
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1670,13 +1767,13 @@ export default function EventPage() {
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Booth</th>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Use Case</th>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Type</th>
-                    </tr>
-                  </thead>
+                  </tr>
+                </thead>
                   <tbody className="divide-y divide-gray-200">
                     {filteredCompanies.length === 0 ? (
                       <tr>
                         <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No companies found</td>
-                      </tr>
+                    </tr>
                     ) : (
                       filteredCompanies.map((company, idx) => (
                         <tr key={idx} className="hover:bg-gray-50">
@@ -1693,7 +1790,7 @@ export default function EventPage() {
                     )}
                 </tbody>
               </table>
-              </div>
+            </div>
             </div>
           </div>
         )}
@@ -1709,7 +1806,7 @@ export default function EventPage() {
                   title="Floor Plan PDF"
                   style={{ minHeight: "600px" }}
                 />
-              </div>
+        </div>
               <div className="mt-4 text-center">
                 <a
                   href="/api/floorplan"
@@ -1719,7 +1816,7 @@ export default function EventPage() {
                 >
                   Download PDF
                 </a>
-              </div>
+      </div>
         </div>
       </div>
         )}
