@@ -10,7 +10,7 @@ const contactInfo = {
   company: "Aurora Labs",
   email: "zohar@auroralabs.com",
   phone: "+972 54-222-0020",
-  address: "San Francisco Bay Area",
+  address: "45 Rothschild St, Tel Aviv, Israel",
   linkedin: "https://www.linkedin.com/in/zohar-fox?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
 };
 
