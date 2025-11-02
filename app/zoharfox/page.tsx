@@ -248,6 +248,7 @@ END:VCARD`;
             <div className="qr-section">
               <h3 className="qr-title">Connect with me</h3>
               <div className="qr-code-container">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(contactInfo.linkedin)}&color=4C1D95&bgcolor=FFFFFF`}
                   alt="QR Code linking to LinkedIn profile"
