@@ -689,6 +689,19 @@ export default function EventPage() {
     return filtered;
   }, [searchTerm, filterType]);
 
+  const stats = useMemo(() => {
+    const confirmed = dbMeetings.filter(m => m.status === 'confirmed').length;
+    const tentative = dbMeetings.filter(m => m.status === 'tentative').length;
+    const tbd = dbTbdCompanies.length;
+    const total = dbMeetings.length;
+    return [
+      { label: "Confirmed", value: confirmed, color: "text-green-600" },
+      { label: "Tentative", value: tentative, color: "text-blue-600" },
+      { label: "TBD", value: tbd, color: "text-orange-600" },
+      { label: "Total", value: total, color: "text-gray-900" }
+    ];
+  }, [dbMeetings, dbTbdCompanies]);
+
   return (
     <div className="event-page min-h-screen pb-20 md:pb-0">
       {/* Delete Confirmation Modal */}
@@ -901,18 +914,7 @@ export default function EventPage() {
           <div className="space-y-8">
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {useMemo(() => {
-                const confirmed = dbMeetings.filter(m => m.status === 'confirmed').length;
-                const tentative = dbMeetings.filter(m => m.status === 'tentative').length;
-                const tbd = dbTbdCompanies.length;
-                const total = dbMeetings.length;
-                return [
-                  { label: "Confirmed", value: confirmed, color: "text-green-600" },
-                  { label: "Tentative", value: tentative, color: "text-blue-600" },
-                  { label: "TBD", value: tbd, color: "text-orange-600" },
-                  { label: "Total", value: total, color: "text-gray-900" }
-                ];
-              }, [dbMeetings, dbTbdCompanies]).map((stat) => (
+              {stats.map((stat) => (
                 <div key={stat.label} className="bg-white rounded-xl p-4 border border-gray-200">
                   <div className={`text-2xl md:text-3xl font-bold ${stat.color}`}>{stat.value}</div>
                   <div className="text-xs md:text-sm text-gray-600 mt-1">{stat.label}</div>
