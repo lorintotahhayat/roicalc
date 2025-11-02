@@ -59,7 +59,7 @@ export async function GET() {
       const https = await import('https');
       const { URL } = await import('url');
       
-      return new Promise((resolve, reject) => {
+      return new Promise<NextResponse>((resolve, reject) => {
         const url = new URL(apiUrl);
         
         // Create agent that doesn't reject unauthorized certificates (dev only)
@@ -173,7 +173,7 @@ export async function POST(request: Request) {
       const https = await import('https');
       const { URL } = await import('url');
       
-      return new Promise((resolve, reject) => {
+      return new Promise<NextResponse>((resolve, reject) => {
         const url = new URL(apiUrl);
         const agent = new https.Agent({ rejectUnauthorized: false });
         
