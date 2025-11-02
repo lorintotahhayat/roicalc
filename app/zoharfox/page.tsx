@@ -2,28 +2,28 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
-import "./morhayat.css";
+import "../morhayat/morhayat.css";
 
 const contactInfo = {
-  name: "Mor Hayat",
-  title: "Director Business Development",
+  name: "Zohar Fox",
+  title: "CEO & Co Founder",
   company: "Aurora Labs",
-  email: "mor.hayat@auroralabs.com",
-  phone: "+972542600177",
-  address: "45 Rothschild St, Tel Aviv, Israel",
-  linkedin: "https://www.linkedin.com/in/mor-hayat/",
+  email: "zohar@auroralabs.com",
+  phone: "+972 54-222-0020",
+  address: "San Francisco Bay Area",
+  linkedin: "https://www.linkedin.com/in/zohar-fox?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app",
 };
 
-export default function MorHayatPage() {
+export default function ZoharFoxPage() {
 
   const generateVCard = () => {
     return `BEGIN:VCARD
 VERSION:3.0
 FN:${contactInfo.name}
-N:Hayat;Mor;;;
-ORG:${contactInfo.company}
-TITLE:${contactInfo.title}
-TEL;TYPE=CELL:${contactInfo.phone}
+N:Fox;Zohar;;;
+${contactInfo.title ? `TITLE:${contactInfo.title}` : ''}
+${contactInfo.company ? `ORG:${contactInfo.company}` : ''}
+TEL;TYPE=CELL:${contactInfo.phone.replace(/[^0-9+]/g, "")}
 EMAIL:${contactInfo.email}
 ADR;TYPE=WORK:;;${contactInfo.address}
 URL:${contactInfo.linkedin}
@@ -37,7 +37,7 @@ END:VCARD`;
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "Mor_Hayat_Aurora_Labs.vcf";
+    link.download = "Zohar_Fox.vcf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -49,7 +49,7 @@ END:VCARD`;
   const shareCard = async () => {
     const shareData = {
       title: `${contactInfo.name} - ${contactInfo.title}`,
-      text: `Connect with ${contactInfo.name}, ${contactInfo.title} at ${contactInfo.company}`,
+      text: `Connect with ${contactInfo.name}, ${contactInfo.title}`,
       url: window.location.href,
     };
 
@@ -179,7 +179,7 @@ END:VCARD`;
             <div className="profile-section">
               <div className="profile-circle">
                 <Image 
-                  src="/images/morhayat.jpeg" 
+                  src="/images/zohar.jpeg" 
                   alt={contactInfo.name}
                   width={70}
                   height={70}
@@ -188,8 +188,8 @@ END:VCARD`;
                 />
               </div>
               <h1 className="name">{contactInfo.name}</h1>
-              <h2 className="title">{contactInfo.title}</h2>
-              <p className="company">{contactInfo.company}</p>
+              {contactInfo.title && <h2 className="title">{contactInfo.title}</h2>}
+              {contactInfo.company && <p className="company">{contactInfo.company}</p>}
             </div>
 
             <div className="contact-section">
@@ -241,7 +241,7 @@ END:VCARD`;
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  linkedin.com/in/mor-hayat
+                  linkedin.com/in/zohar-fox
                 </a>
               </div>
             </div>

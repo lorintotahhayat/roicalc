@@ -39,6 +39,13 @@
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .morhayat-page {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ========================================
    Gradient Background Animation
    ======================================== */
@@ -81,13 +88,24 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .morhayat-page .container {
+    justify-content: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+}
+
 /* ========================================
    Business Card
    ======================================== */
 .morhayat-page .business-card {
   background: var(--white);
   border-radius: 16px;
-  padding: 20px 20px;
+  padding: 18px 18px;
   box-shadow: var(--shadow-xl);
   width: 100%;
   max-width: 450px;
@@ -98,6 +116,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .morhayat-page .business-card {
+    max-height: none;
+    padding: 16px 16px;
+    margin-bottom: 20px;
+  }
 }
 
 @keyframes fadeInUp {
@@ -126,7 +152,7 @@
    ======================================== */
 .morhayat-page .profile-section {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   animation: fadeIn 1s ease-out 0.2s both;
 }
 
@@ -140,11 +166,11 @@
 }
 
 .morhayat-page .profile-circle {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background: var(--gradient-main);
-  margin: 0 auto 8px;
+  margin: 0 auto 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,10 +217,10 @@
 
 .morhayat-page .name {
   font-family: var(--font-primary);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--charcoal);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   background: var(--gradient-main);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -203,7 +229,7 @@
 
 .morhayat-page .title {
   font-family: var(--font-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--dark-gray);
   margin-bottom: 2px;
@@ -211,7 +237,7 @@
 
 .morhayat-page .company {
   font-family: var(--font-secondary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--gray);
 }
@@ -220,15 +246,15 @@
    Contact Section
    ======================================== */
 .morhayat-page .contact-section {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   animation: fadeIn 1.2s ease-out 0.4s both;
 }
 
 .morhayat-page .contact-item {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  margin-bottom: 6px;
+  padding: 6px 10px;
+  margin-bottom: 5px;
   background: var(--off-white);
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -280,8 +306,8 @@
    ======================================== */
 .morhayat-page .qr-section {
   text-align: center;
-  margin-bottom: 12px;
-  padding: 12px 10px;
+  margin-bottom: 10px;
+  padding: 10px 8px;
   background: linear-gradient(135deg, rgba(107, 70, 193, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
   border-radius: 12px;
   animation: fadeIn 1.4s ease-out 0.6s both;
@@ -289,10 +315,10 @@
 
 .morhayat-page .qr-title {
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--charcoal);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .morhayat-page .qr-code-container {
@@ -312,8 +338,8 @@
 .morhayat-page .qr-code-image {
   display: block;
   margin: 0 auto;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   max-width: 100%;
 }
 
@@ -328,16 +354,17 @@
    ======================================== */
 .morhayat-page .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   animation: fadeIn 1.6s ease-out 0.8s both;
+  flex-shrink: 0;
 }
 
 .morhayat-page .btn {
   flex: 1;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border: none;
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   font-family: var(--font-secondary);
   cursor: pointer;
@@ -347,6 +374,7 @@
   justify-content: center;
   gap: 4px;
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
 
 .morhayat-page .btn i {
@@ -382,22 +410,6 @@
 
 .morhayat-page .btn-secondary:active {
   transform: translateY(0);
-}
-
-/* ========================================
-   Footer
-   ======================================== */
-.morhayat-page .footer {
-  text-align: center;
-  margin-top: 8px;
-  padding: 0;
-  animation: fadeIn 1.8s ease-out 1s both;
-}
-
-.morhayat-page .footer p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 9px;
-  font-weight: 400;
 }
 
 /* ========================================
